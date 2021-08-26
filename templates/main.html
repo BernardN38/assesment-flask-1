@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>Forex Converter</title>
+</head>
+<body>
+    <h1>Currency Converter!</h1>
+    <form action="/convert" id="convert-form">
+        <label for="currency-1">Converting From:</label>
+        <input type="text" id="currency-1" name="currency-1" value="{{currency_1}}">
+        <div id="suggestion-cont"><div>Suggestions:</div><div id="suggestions-1"></div></div>
+        <label for="currency-2">Converting To:</label>
+        <input type="text" id="currency-2" name="currency-2" value='{{currency_2}}''>
+        <div id="suggestion-cont-2"><div>Suggestions:</div><div id="suggestions-2"></div></div>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" value="1" name="amount">
+        <button id="submit">Calculate</button>
+    </form>
+    <h2>Supported Currencies-</h2>
+    <div>IDR,  BGN,  ILS,  GBP,  DKK,  CAD,  JPY,  HUF,  RON,  MYR,  SEK,  SGD,  HKD,  AUD,  CHF, KRW,</div>
+    <div>CNY,  TRY,  HRK,  NZD,  THB,  EUR,  NOK,  RUB,  INR,  MXN,  CZK,  BRL,  PLN,  PHP,  ZAR </div>
+    {% for msg in get_flashed_messages() %}
+        <h2>Unsupported Currency!</h2>
+        {% endfor %}
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="../static/app.js"></script>
+</body>
+</html>

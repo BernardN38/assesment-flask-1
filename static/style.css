@@ -1,0 +1,21 @@
+#container {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	text-align: center;
+	align-items: center;
+	border: 2px solid black;
+}
+
+#suggestion-cont,
+#suggestion-cont-2 {
+	display: flex;
+	font-size: larger;
+}
+
+.button {
+	border: 2px solid black;
+	background-color: silver;
+	display: inline;
+	margin: 1px;
+}
