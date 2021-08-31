@@ -1,46 +1,30 @@
-from flask import Flask, render_template, request, redirect, session, flash
-from flask_debugtoolbar import DebugToolbarExtension
-from surveys import  satisfaction_survey
+from forex_python.converter import CurrencyRates
+from flask import Flask, render_template, request, session, redirect,flash
 
 app = Flask(__name__)
-app.debug = True
-app.config['SECRET_KEY'] = '<replace with a secret key>'
-toolbar = DebugToolbarExtension(app)
+c = CurrencyRates()
 
-responses = []
+app.secret_key = 'supersecretkey'
 
 @app.route('/')
-def home():
-    session['responses'] = []
-    return render_template('home.html', survey=satisfaction_survey)
+def homepage():
+    currency_1 = session.get('currency_1',"USD")
+    currency_2 = session.get('currency_2', "EUR")
+    amount = session.get('amount', 0)
+    exchange = session.get('exchange', 0)
+    return render_template('main.html',currency_1=currency_1,currency_2=currency_2, amount=amount,exchange=exchange)
 
-@app.route('/question/<num>')
-def show_question(num):
-    current = len(responses)
-    if int(num) >= len(satisfaction_survey.questions)+1:
-        return redirect('/thankyou')
-    elif int(num) == current:
-        return render_template('question.html', survey=satisfaction_survey, num=int(num), responses=responses, length=len(satisfaction_survey.questions), current_page = len(responses))
-    else:
-        flash('questions need to be answered in order')
-        return redirect(f'/question/{current}')
+@app.route('/convert')
+def calculate_exchange():
+    currency_1 = request.args.get('currency-1').upper()
+    currency_2 = request.args.get('currency-2').upper()
+    amount = request.args.get('amount')
+    rate = 0
+    try:
+        rate = c.convert(currency_1,currency_2,int(amount))
+        return render_template('display.html',currency_1=currency_1,currency_2=currency_2, amount=amount,exchange=round(rate,2))
+    except:
+        flash('Unsupported currency')
+        return redirect('/')
 
 
-@app.route('/answer', methods=['POST'])
-def save_answer():
-    responses_in_session = session['responses']
-    responses_in_session.append(request.form.get('answer'))
-    session['responses'] = responses_in_session
-    responses.append(request.form.get('answer'))
-    if len(responses) >= len(satisfaction_survey.questions):
-        return redirect('/thankyou')
-    else:
-        return redirect(f'/question/{len(responses)+1}')
-
-@app.route('/thankyou')
-def thank_you():
-    return render_template('thankyou.html')
-
-@app.route('/results')
-def print_results():
-    return render_template('results.html', responses=responses, survey=satisfaction_survey)
